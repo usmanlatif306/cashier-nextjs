@@ -5,19 +5,19 @@ Stripe Connect is the core Stripe product for multi-party business models, inclu
 
 #### Features
 
-** 1: ** Customer account is creating on stripe when he sign up.
+**1:** Customer account is creating on stripe when he sign up.
 
-** 2: ** Customer can easily connect you customers to stripe connect by redirecting them to stripe onboarding process, their they complete the onbaording flow and then redirect back to app for futher processing.
+**2:** Customer can easily connect you customers to stripe connect by redirecting them to stripe onboarding process, their they complete the onbaording flow and then redirect back to app for futher processing.
 
-** 3: ** Customer can create login links to stripe portal where they can see all his payput history and available infos about balance and many more informations.
+**3:** Customer can create login links to stripe portal where they can see all his payput history and available infos about balance and many more informations.
 
-** 4: ** Customer can create payments intent for paying any payment and can save his payment information for future payments using ACH.
+**4:** Customer can create payments intent for paying any payment and can save his payment information for future payments using ACH.
 
-** 5: ** Customer can verify his identity (KYC) using stripe identification process.
+**5:** Customer can verify his identity (KYC) using stripe identification process.
 
-** 6: ** Customer can send payments to another customer.
+**6:** Customer can send payments to another customer.
 
-** More features comming soon most importantly handling Stripe Subscriptions **
+**More features comming soon most importantly handling Stripe Subscriptions**
 
 ### Installation
 
@@ -51,7 +51,7 @@ STRIPE_SECRET_KEY=your-stripe-secret
 STRIPE_WEBHOOK_SECRET=your-stripe-webhook-secret
 ```
 
-** You should ensure that the STRIPE_WEBHOOK_SECRET environment variable is defined in your application's .env file, as this variable is used to ensure that incoming webhooks are actually from Stripe. **
+**You should ensure that the STRIPE_WEBHOOK_SECRET environment variable is defined in your application's .env file, as this variable is used to ensure that incoming webhooks are actually from Stripe.**
 
 ### Testing
 
