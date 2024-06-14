@@ -1,0 +1,112 @@
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = env("DATABASE_URL") // uses connection pooling
+}
+
+model User {
+    id                       String  @id @default(cuid())
+    name                     String
+    email                    String  @unique
+    role                     String
+    stripe_customer_id       String? //stripe customer id
+    stripe_account_id        String? //stripe account id
+    stripe_payment_method_id String? //stripe payment method id
+    completed_onboarding     Boolean @default(false) // whether the user is completed onboarding on stripe or not
+    is_verified              Boolean @default(false) // whether the user identification is verified through stripe
+    // below columns are to store customer address information
+    is_submitted             Boolean @default(false) // whether the user submitted application for verification
+    verification_error       String? // if user submitted application for verification but not verified due to any reason
+    line1                    String?
+    city                     String?
+    state                    String?
+    postal_code              String?
+    country                  String?
+
+    createdAt     DateTime              @default(now())
+    updatedAt     DateTime              @updatedAt
+    accounts      Account[]
+    sessions      Session[]
+    verifications VerificationRequest[]
+    payments      PaymentIntents[]
+}
+
+model Account {
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String?
+    refresh_token_expires_in Int?
+    access_token             String?
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String?
+    session_state            String?
+    oauth_token_secret       String?
+    oauth_token              String?
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@index([userId])
+}
+
+model Session {
+    id           String   @id @default(cuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+    createdAt  DateTime @default(now())
+
+    @@unique([identifier, token])
+}
+
+model VerificationRequest {
+    id          String   @id @default(cuid())
+    userId      String
+    sessionId   String   @unique
+    is_verified Boolean  @default(false) // result of verification request
+    error       String? // if any error happens during verification
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+model PaymentIntents {
+    id             String   @id @default(cuid())
+    userId         String // the id of the owner who is creating payment intent
+    rentalId       String // the id of the rental for payment intent is creating
+    intentId       String   @unique
+    link           String? // link of stripe checkout
+    amount         String // total amount of payment intent to be paid before tax
+    amountPaid     String? // total amount paid after adding tax
+    applicationFee String // 2Quip share
+    ownerShare     String // Owner share for rental item
+    shippingAmount String?
+    isPaid         Boolean  @default(false) // wheather payment intent is paid or not
+    transferGroup  String // A string that identifies the resulting payment as part of a group.
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+
+    rental User @relation(fields: [rentalId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
